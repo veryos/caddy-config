@@ -11,10 +11,16 @@ steps:
   - name: deploy
     image: caddy:latest
     volumes:
-      - /etc/caddy:/etc/caddy
+      - name: caddy-config
+        path: /etc/caddy
     commands:
       - cp Caddyfile /etc/caddy/Caddyfile
       - caddy reload --config /etc/caddy/Caddyfile
+
+volumes:
+  - name: caddy-config
+    host:
+      path: /etc/caddy
 
 trigger:
   branch:
