@@ -10,19 +10,16 @@ steps:
       - caddy validate --config Caddyfile
 
   - name: deploy
-    image: caddy:latest
-    pull: never
-    volumes:
-      - name: caddy-config
-        path: /etc/caddy
-    commands:
-      - cp Caddyfile /etc/caddy/Caddyfile
-      - caddy reload --config /etc/caddy/Caddyfile
-
-volumes:
-  - name: caddy-config
-    host:
-      path: /etc/caddy
+    image: appleboy/drone-ssh
+    settings:
+      host: 127.0.0.1
+      port: 32179
+      username: root
+      key:
+        from_secret: SSH_KEY
+      script:
+        - cd /opt/drone/repos/veryos/caddy-config && cp Caddyfile /etc/caddy/Caddyfile
+        - caddy reload --config /etc/caddy/Caddyfile
 
 trigger:
   branch:
