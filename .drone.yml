@@ -5,11 +5,13 @@ name: caddy-reload
 steps:
   - name: validate
     image: caddy:latest
+    pull: never
     commands:
       - caddy validate --config Caddyfile
 
   - name: deploy
     image: caddy:latest
+    pull: never
     volumes:
       - name: caddy-config
         path: /etc/caddy
