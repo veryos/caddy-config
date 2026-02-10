@@ -1,0 +1,138 @@
+# Caddyfile - morzz.com 配置
+# 香港服务器 - 自动 HTTPS
+# 最后更新: $(date "+%Y-%m-%d %H:%M:%S")
+
+# 导入额外的配置片段
+import conf.d/*.conf
+
+# 主站点
+morzz.com, www.morzz.com {
+	root * /var/www/html
+	file_server
+
+	header {
+		Server "Caddy"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+	}
+
+	log {
+		output file /var/log/caddy/access.log
+		format json
+	}
+}
+
+# API 网关
+api.morzz.com {
+	respond "🌐 API Gateway - Coming Soon"
+}
+
+# 应用入口
+app.morzz.com {
+	respond "📱 App Portal - 应用入口"
+}
+
+# Drone CI/CD
+ci.morzz.com {
+	reverse_proxy 127.0.0.1:8081
+
+	header {
+		Server "Caddy"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+	}
+
+	log {
+		output file /var/log/caddy/ci-access.log
+		format json
+	}
+}
+
+# Outline Wiki 文档系统
+docs.morzz.com {
+	reverse_proxy 127.0.0.1:3000
+
+	header {
+		Server "Caddy"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		X-XSS-Protection "1; mode=block"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+
+	@websockets {
+		header Connection *Upgrade*
+		header Upgrade websocket
+	}
+	reverse_proxy @websockets 127.0.0.1:3000
+
+	log {
+		output file /var/log/caddy/docs-access.log
+		format json
+	}
+}
+
+# Uptime Kuma 监控面板
+status.morzz.com {
+	reverse_proxy 127.0.0.1:3001
+
+	header {
+		Server "Caddy"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+	}
+
+	log {
+		output file /var/log/caddy/status-access.log
+		format json
+	}
+}
+
+# Vaultwarden 密码管理器
+vault.morzz.com {
+	reverse_proxy 127.0.0.1:8080
+
+	header {
+		Server "Caddy"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		X-Robots-Tag "noindex, nofollow"
+	}
+
+	log {
+		output file /var/log/caddy/vault-access.log
+		format json
+	}
+}
+
+# wiki 重定向到 docs
+wiki.morzz.com {
+	redir https://docs.morzz.com{uri} permanent
+
+	log {
+		output file /var/log/caddy/wiki-access.log
+		format json
+	}
+}
+
+# Dex OIDC 认证服务
+auth.morzz.com {
+	reverse_proxy 127.0.0.1:5556
+
+	header {
+		Server "Caddy"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+
+	log {
+		output file /var/log/caddy/auth-access.log
+		format json
+	}
+}
+
+# 测试环境
+test.morzz.com {
+	respond "🧪 Test Environment - Drone CI 自动部署测试 - $(date)"
+}
