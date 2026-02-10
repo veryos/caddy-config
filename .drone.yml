@@ -12,6 +12,7 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host: 45.152.67.237
+      port: 32179
       username: root
       key:
         from_secret: SSH_KEY
