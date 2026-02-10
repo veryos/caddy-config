@@ -11,7 +11,7 @@ steps:
   - name: deploy
     image: appleboy/drone-ssh
     settings:
-      host: morzz.com
+      host: 45.152.67.237
       username: root
       key:
         from_secret: SSH_KEY
