@@ -1,6 +1,5 @@
 # Caddyfile - morzz.com 配置
 # 香港服务器 - 自动 HTTPS
-# 最后更新: $(date "+%Y-%m-%d %H:%M:%S")
 
 # 导入额外的配置片段
 import conf.d/*.conf
@@ -30,22 +29,6 @@ api.morzz.com {
 # 应用入口
 app.morzz.com {
 	respond "📱 App Portal - 应用入口"
-}
-
-# Drone CI/CD
-ci.morzz.com {
-	reverse_proxy 127.0.0.1:8081
-
-	header {
-		Server "Caddy"
-		X-Content-Type-Options "nosniff"
-		X-Frame-Options "SAMEORIGIN"
-	}
-
-	log {
-		output file /var/log/caddy/ci-access.log
-		format json
-	}
 }
 
 # Outline Wiki 文档系统
@@ -134,5 +117,5 @@ auth.morzz.com {
 
 # 测试环境
 test.morzz.com {
-	respond "🧪 Test Environment - Drone CI 自动部署测试 - $(date)"
+	respond "🧪 Test Environment - Drone CI 自动部署测试"
 }
