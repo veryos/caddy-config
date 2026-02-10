@@ -12,7 +12,7 @@ steps:
   - name: deploy
     image: appleboy/drone-ssh
     settings:
-      host: 127.0.0.1
+      host: 172.17.0.1
       port: 32179
       username: root
       key:
