@@ -1,0 +1,24 @@
+kind: pipeline
+type: docker
+name: caddy-reload
+
+steps:
+  - name: validate
+    image: caddy:latest
+    commands:
+      - caddy validate --config Caddyfile
+
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host: morzz.com
+      username: root
+      key:
+        from_secret: SSH_KEY
+      script:
+        - cp Caddyfile /etc/caddy/Caddyfile
+        - caddy reload --config /etc/caddy/Caddyfile
+
+trigger:
+  branch:
+    - main
